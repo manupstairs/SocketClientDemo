@@ -10,7 +10,7 @@ namespace SocketClient
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello World! I'm client!");
             //创建实例
             Socket socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress ip = IPAddress.Parse("192.168.8.105");
