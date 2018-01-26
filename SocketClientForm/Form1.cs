@@ -24,7 +24,7 @@ namespace SocketClientForm
 
         private void FormLoad(object sender, EventArgs e)
         {
-            IPAddress ip = IPAddress.Parse("192.168.8.105");
+            IPAddress ip = IPAddress.Parse(this.textBox1.Text.Trim());
             IPEndPoint point = new IPEndPoint(ip, 2333);
             //进行连接
             socketClient.Connect(point);
