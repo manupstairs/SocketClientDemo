@@ -24,13 +24,12 @@ namespace SocketClient
             thread.Start(socketClient);
 
             //不停的给服务器发送数据
-            int i = 0;
+            
             while (true)
             {
-                i++;
-                var buffter = Encoding.UTF8.GetBytes($"Test Send Message:{i}");
+                var input = Console.ReadLine();
+                var buffter = Encoding.UTF8.GetBytes(input);
                 var temp = socketClient.Send(buffter);
-                Thread.Sleep(1000);
             }
 
         }
