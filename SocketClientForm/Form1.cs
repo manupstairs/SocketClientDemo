@@ -15,6 +15,7 @@ namespace SocketClientForm
     public partial class Form1 : Form
     {
         private Socket socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+       
 
         public Form1()
         {
@@ -35,7 +36,7 @@ namespace SocketClientForm
             thread.Start(socketClient);
         }
 
-        private void Recive(object o)
+        private unsafe void Recive(object o)
         {
             var send = o as Socket;
             while (true)
@@ -48,16 +49,39 @@ namespace SocketClientForm
                     break;
                 }
                 var str = Encoding.UTF8.GetString(buffer, 0, effective);
-                //Console.WriteLine(str);
-                this.listBoxReceive.Items.Add(str);
+
+                fixed (char* s = str)
+                {
+                    var decode = new Decode();
+                    decode.StringTransBack(s);
+                }
+
+                this.BeginInvoke((Action)(() =>
+                {
+                    this.listBoxReceive.Items.Add(str);
+                }));
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private unsafe void button1_Click(object sender, EventArgs e)
         {
-            var input = this.txtSend.Text.Trim();
+
+            var input = this.txtSend.Text;
+
+            fixed(char* s = input)
+            { 
+                Encryption encryption = new Encryption();
+                encryption.StringTransfer(s);
+            }
+
             var buffter = Encoding.UTF8.GetBytes(input);
-            socketClient.Send(buffter);
+            var copy = new byte[buffter.Length + 1];
+            for (int i = 0; i < buffter.Length; i++)
+            {
+                copy[i] = buffter[i];
+            }
+            copy[buffter.Length] = Convert.ToByte('\0');
+            socketClient.Send(copy);
         }
     }
 }
